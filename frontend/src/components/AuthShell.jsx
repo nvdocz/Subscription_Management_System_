@@ -1,4 +1,6 @@
 import { Check } from 'lucide-react'
+import { createContext, useContext } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import { BrandMark, Wordmark } from './Brand'
 import { Sparkline } from './ui'
 import './AuthShell.css'
@@ -26,10 +28,11 @@ export function PasswordRules({ password }) {
   )
 }
 
-export function AuthShell({ title, subtitle, children, footer }) {
+const InSwitch = createContext(false)
+
+function AuthStory() {
   return (
-    <div className="auth-shell">
-      <section className="auth-story">
+    <section className="auth-story">
         <div className="auth-brand">
           <BrandMark size={38} />
           <Wordmark light />
@@ -63,18 +66,42 @@ export function AuthShell({ title, subtitle, children, footer }) {
             </div>
           </div>
         </div>
-      </section>
+    </section>
+  )
+}
 
-      <section className="auth-panel">
-        <div className="auth-card">
-          <header>
-            <h1>{title}</h1>
-            {subtitle && <p>{subtitle}</p>}
-          </header>
-          {children}
-          {footer && <footer>{footer}</footer>}
-        </div>
-      </section>
+/** Login and Register share this frame, so the dark panel and the form glide past each other when you switch. */
+export function AuthSwitchLayout() {
+  const flipped = useLocation().pathname === '/register'
+  return (
+    <InSwitch.Provider value>
+      <div className={`auth-shell auth-swap ${flipped ? 'flipped' : ''}`}>
+        <AuthStory />
+        <section className="auth-panel">
+          <Outlet />
+        </section>
+      </div>
+    </InSwitch.Provider>
+  )
+}
+
+export function AuthShell({ title, subtitle, children, footer }) {
+  const inSwitch = useContext(InSwitch)
+  const card = (
+    <div className="auth-card">
+      <header>
+        <h1>{title}</h1>
+        {subtitle && <p>{subtitle}</p>}
+      </header>
+      {children}
+      {footer && <footer>{footer}</footer>}
+    </div>
+  )
+  if (inSwitch) return card
+  return (
+    <div className="auth-shell">
+      <AuthStory />
+      <section className="auth-panel">{card}</section>
     </div>
   )
 }

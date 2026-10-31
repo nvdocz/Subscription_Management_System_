@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
+import './motion.css'
 import { FeedbackProvider } from './components/Toast.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 

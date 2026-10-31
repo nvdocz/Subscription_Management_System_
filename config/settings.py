@@ -135,19 +135,8 @@ TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-# Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD (for Gmail, an app password) to deliver real mail. Without them
-# emails are printed in the backend terminal only.
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and not TESTING:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-    EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = f'Brightloop Billing <{EMAIL_HOST_USER}>'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    DEFAULT_FROM_EMAIL = 'no-reply@example.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'no-reply@example.com'
 
 # Base URL of the frontend app, used to build links sent in emails (e.g. password reset).
 FRONTEND_URL = 'http://localhost:5173'

@@ -3,3 +3,5 @@ __pycache__/
 db.sqlite3
 venv/
 *.log
+TEST_ACCOUNT.txt
+*.mp4

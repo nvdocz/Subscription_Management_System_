@@ -21,6 +21,7 @@ export default function Layout() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const groups = NAV_GROUPS[user?.role] ?? NAV_GROUPS.customer
   const title = usePageTitle(user?.role)
+  const { pathname } = useLocation()
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function Layout() {
           </button>
         </header>
         <main className="shell-content">
-          <div className="shell-inner">
+          <div className="shell-inner page-enter" key={pathname}>
             <Outlet />
           </div>
         </main>

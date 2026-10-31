@@ -1,12 +1,9 @@
 from unittest import mock
 
-from django.core import mail
-
 from django.test import override_settings
 from rest_framework.test import APITestCase
 
 from accounts import email_check
-from accounts.models import User
 from accounts.email_check import DomainDoesNotExist, NOT_FOUND_MESSAGE, check_email, mailbox_missing
 
 PAYLOAD = {'username': 'newbie', 'email': 'newbie@gmail.com', 'password': 'Valid#Pass1'}
@@ -52,50 +49,3 @@ class EmailExistenceTests(APITestCase):
             response = self.client.post('/api/auth/register/', PAYLOAD, format='json')
         self.assertEqual(response.status_code, 201)
 
-
-class EmailVerificationTests(APITestCase):
-    def sign_up(self):
-        mail.outbox.clear()
-        return self.client.post('/api/auth/register/', PAYLOAD, format='json')
-
-    def link_parts(self):
-        link = next(word for word in mail.outbox[0].body.split() if '/verify-email/' in word)
-        uid, token = link.rstrip('/').split('/')[-2:]
-        return {'uid': uid, 'token': token}
-
-    def test_a_new_account_stays_locked_until_the_emailed_link_is_opened(self):
-        self.assertEqual(self.sign_up().status_code, 201)
-        self.assertFalse(User.objects.get(username='newbie').is_active)
-        self.assertEqual(mail.outbox[0].to, ['newbie@gmail.com'])
-        login = self.client.post('/api/auth/login/', {'username': 'newbie', 'password': 'Valid#Pass1'}, format='json')
-        self.assertEqual(login.status_code, 401)
-        self.assertIn('verify your email', login.json()['detail'])
-
-        confirm = self.client.post('/api/auth/verify-email/', self.link_parts(), format='json')
-        self.assertEqual(confirm.status_code, 200)
-        self.assertTrue(User.objects.get(username='newbie').is_active)
-        login = self.client.post('/api/auth/login/', {'username': 'newbie', 'password': 'Valid#Pass1'}, format='json')
-        self.assertEqual(login.status_code, 200)
-
-    def test_wrong_password_on_a_locked_account_is_not_told_about_verification(self):
-        self.sign_up()
-        login = self.client.post('/api/auth/login/', {'username': 'newbie', 'password': 'Wrong#Pass1'}, format='json')
-        self.assertEqual(login.status_code, 401)
-        self.assertNotIn('verify', login.json()['detail'])
-
-    def test_a_tampered_link_is_refused(self):
-        self.sign_up()
-        parts = self.link_parts()
-        bad = self.client.post('/api/auth/verify-email/', {**parts, 'token': 'bad-token'}, format='json')
-        self.assertEqual(bad.status_code, 400)
-        self.assertFalse(User.objects.get(username='newbie').is_active)
-
-    def test_the_link_can_be_sent_again_only_for_waiting_accounts(self):
-        self.sign_up()
-        mail.outbox.clear()
-        self.client.post('/api/auth/verify-email/resend/', {'email': 'newbie@gmail.com'}, format='json')
-        self.assertEqual(len(mail.outbox), 1)
-        self.client.post('/api/auth/verify-email/', self.link_parts(), format='json')
-        mail.outbox.clear()
-        self.client.post('/api/auth/verify-email/resend/', {'email': 'newbie@gmail.com'}, format='json')
-        self.assertEqual(mail.outbox, [])

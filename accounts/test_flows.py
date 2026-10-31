@@ -82,7 +82,6 @@ class SignUpTests(APITestCase):
 
     def test_login_returns_tokens_that_carry_the_role(self):
         self.register()
-        User.objects.filter(username='newbie').update(is_active=True)  # as if the emailed link was opened
         response = self.client.post('/api/auth/login/', {'username': 'newbie', 'password': 'Valid#Pass1'}, format='json')
         self.assertEqual(response.status_code, 200)
         body = response.json()

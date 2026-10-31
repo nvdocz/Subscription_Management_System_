@@ -1,0 +1,211 @@
+/* Motion layer. Only opacity and transform are animated, so it stays on the GPU and never causes layout jank. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- page change ---------- */
+.page-enter {
+  animation: page-in 0.28s var(--ease-out) backwards;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* cards and rows fade up one after another */
+.page-enter > * {
+  animation: page-in 0.32s var(--ease-out) backwards;
+}
+
+.page-enter > *:nth-child(2) {
+  animation-delay: 0.04s;
+}
+
+.page-enter > *:nth-child(3) {
+  animation-delay: 0.08s;
+}
+
+.page-enter > *:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.page-enter > *:nth-child(n + 5) {
+  animation-delay: 0.16s;
+}
+
+/* ---------- sidebar ---------- */
+.nav-item {
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.nav-item:hover {
+  transform: translateX(2px);
+}
+
+.nav-item svg {
+  transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out), transform 0.25s var(--ease-out);
+}
+
+.nav-item:hover svg {
+  transform: scale(1.08);
+}
+
+/* the amber marker grows in instead of popping */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--amber);
+  opacity: 0;
+  transform: scaleY(0.2);
+  transition: opacity 0.2s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.nav-item.active::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* ---------- tabs, buttons, links ---------- */
+.filter-tabs button {
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+
+.filter-tabs button:not(.active):hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.icon-btn,
+.quick-action,
+.table-actions a,
+.table-actions button {
+  transition: background-color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+    box-shadow 0.25s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active,
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+input,
+select,
+textarea {
+  transition: border-color 0.2s var(--ease-out), box-shadow 0.25s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+
+.data-table tbody tr {
+  transition: background-color 0.18s var(--ease-out);
+}
+
+/* ---------- popups ---------- */
+.toast-stack > * {
+  animation: rise 0.3s var(--ease-out) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- login / register switch ---------- */
+.auth-swap {
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.auth-swap .auth-story,
+.auth-swap .auth-panel {
+  transition: transform 0.7s var(--ease-in-out);
+  will-change: transform;
+}
+
+/* on Register the dark panel moves to the right and the form to the left */
+.auth-swap.flipped .auth-story {
+  transform: translateX(100%);
+}
+
+.auth-swap.flipped .auth-panel {
+  transform: translateX(-100%);
+}
+
+/* the form fades up once the panels start moving */
+.auth-card {
+  animation: page-in 0.5s var(--ease-out) 0.25s backwards;
+}
+
+.auth-card header,
+.auth-card form > *,
+.auth-card footer {
+  animation: page-in 0.4s var(--ease-out) backwards;
+}
+
+.auth-card header {
+  animation-delay: 0.3s;
+}
+
+.auth-card form > *:nth-child(1) {
+  animation-delay: 0.35s;
+}
+
+.auth-card form > *:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.auth-card form > *:nth-child(3) {
+  animation-delay: 0.45s;
+}
+
+.auth-card form > *:nth-child(n + 4) {
+  animation-delay: 0.5s;
+}
+
+.auth-card footer {
+  animation-delay: 0.55s;
+}
+
+.auth-story * {
+  animation: none;
+}
+
+@media (max-width: 900px) {
+  .auth-swap {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-swap.flipped .auth-story,
+  .auth-swap.flipped .auth-panel {
+    transform: none;
+  }
+}
