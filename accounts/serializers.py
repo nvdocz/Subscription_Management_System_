@@ -1,14 +1,22 @@
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from .email_check import check_email
 from .models import User
+from .verification import NOT_VERIFIED_MESSAGE
 
 
 def unique_email(value):
     email = value.strip().lower()
     if User.objects.filter(email__iexact=email).exists():
         raise serializers.ValidationError('An account with this email already exists.')
+    if settings.VERIFY_EMAIL_EXISTS:
+        problem = check_email(email)
+        if problem:
+            raise serializers.ValidationError(problem)
     return email
 
 
@@ -31,10 +39,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        # Inactive until the owner opens the link mailed to the address, which proves it is a real inbox.
+        return User.objects.create_user(is_active=False, **validated_data)
 
 
 class LoginSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        try:
+            return super().validate(attrs)
+        except AuthenticationFailed:
+            user = User.objects.filter(username=attrs.get(self.username_field), is_active=False).first()
+            if user is not None and user.check_password(attrs.get('password', '')):
+                raise AuthenticationFailed(NOT_VERIFIED_MESSAGE, code='email_not_verified') from None
+            raise
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)

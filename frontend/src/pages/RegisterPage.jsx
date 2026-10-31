@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import api from '../api/client'
 import { AuthShell, PASSWORD_RULES, PasswordRules } from '../components/AuthShell'
 import { Field } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
   const { register } = useAuth()
-  const navigate = useNavigate()
   const [form, setForm] = useState({ username: '', email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const [sentTo, setSentTo] = useState('')
+  const [resent, setResent] = useState(false)
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
   const passwordOk = PASSWORD_RULES.every((rule) => rule.test(form.password))
@@ -20,12 +22,32 @@ export default function RegisterPage() {
     setSubmitting(true)
     try {
       await register(form.username, form.email, form.password)
-      navigate('/login', { replace: true, state: { registered: true } })
+      setSentTo(form.email)
     } catch (err) {
       setErrors(err.response?.data ?? { detail: 'Registration failed.' })
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const resend = async () => {
+    await api.post('/auth/verify-email/resend/', { email: sentTo })
+    setResent(true)
+  }
+
+  if (sentTo) {
+    return (
+      <AuthShell
+        title="Check your inbox"
+        subtitle={`We sent a confirmation link to ${sentTo}.`}
+        footer={<Link to="/login">Back to log in</Link>}
+      >
+        <p className="form-success">Open the link in that email to activate your account. Only a real inbox can receive it.</p>
+        <button type="button" className="btn-primary" onClick={resend} disabled={resent}>
+          {resent ? 'Link sent again' : 'Resend the email'}
+        </button>
+      </AuthShell>
+    )
   }
 
   return (

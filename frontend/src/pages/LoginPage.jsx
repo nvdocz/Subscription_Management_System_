@@ -27,8 +27,8 @@ export default function LoginPage() {
     try {
       await login(form.username, form.password)
       navigate(location.state?.from ?? '/dashboard', { replace: true })
-    } catch {
-      setError('That username and password do not match.')
+    } catch (err) {
+      setError(err.response?.data?.detail?.includes('verify your email') ? err.response.data.detail : 'That username and password do not match.')
     } finally {
       setSubmitting(false)
     }

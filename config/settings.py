@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,16 +130,32 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'no-reply@example.com'
+# Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD (for Gmail, an app password) to deliver real mail. Without them
+# emails are printed in the backend terminal only.
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and not TESTING:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = f'Brightloop Billing <{EMAIL_HOST_USER}>'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = 'no-reply@example.com'
 
 # Base URL of the frontend app, used to build links sent in emails (e.g. password reset).
 FRONTEND_URL = 'http://localhost:5173'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Refuse sign-ups with addresses that cannot receive mail. Off while running tests, or set VERIFY_EMAIL_EXISTS=0.
+VERIFY_EMAIL_EXISTS = os.environ.get('VERIFY_EMAIL_EXISTS', '1') == '1' and not TESTING
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

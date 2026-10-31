@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User
 from .permissions import IsAdmin, IsAdminOrStaff
+from .verification import send_verification_email, user_for_link
 from .serializers import (
     LoginSerializer,
     PasswordResetConfirmSerializer,
@@ -25,6 +26,35 @@ from .serializers import (
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_verification_email(user)
+
+
+class VerifyEmailView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        user = user_for_link(request.data.get('uid', ''), request.data.get('token', ''))
+        if user is None:
+            return Response({'detail': 'This confirmation link is invalid or has expired.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not user.is_active:
+            user.is_active = True
+            user.save(update_fields=['is_active'])
+        return Response({'detail': 'Email confirmed. You can log in now.'})
+
+
+class ResendVerificationView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.filter(email__iexact=serializer.validated_data['email'], is_active=False).first()
+        if user is not None:
+            send_verification_email(user)
+        return Response({'detail': 'If that account is waiting for confirmation, a new link has been sent.'})
 
 
 class LoginView(TokenObtainPairView):
