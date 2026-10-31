@@ -1,0 +1,274 @@
+.sort-select {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.table-card.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.empty-cell {
+  padding: 8px;
+}
+
+.cell-stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.cell-stack.end {
+  align-items: flex-end;
+}
+
+.cell-stack small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.filter-chip button {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+/* ---------- subscription detail ---------- */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 560;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--pine);
+}
+
+.title-with-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.title-with-badge .mono {
+  font-family: var(--mono);
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+
+.stepper-panel {
+  margin-bottom: 18px;
+}
+
+.stepper-panel .panel-body {
+  padding: 20px 24px;
+}
+
+.stage-note {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.stage-note.warn {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.action-hints {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.action-hints b {
+  color: var(--ink);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.table-card.embedded {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.panel-body.flush > .empty {
+  padding: 24px 20px 28px;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  margin: 0;
+  padding: 16px 20px 18px;
+  border-top: 1px solid var(--line);
+}
+
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  min-width: 260px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.totals dt {
+  color: var(--text);
+}
+
+.totals dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 560;
+}
+
+.totals .grand {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.totals .grand dt {
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.totals .grand dd {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.totals p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.facts > div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  text-align: right;
+  color: var(--ink);
+  font-weight: 560;
+}
+
+/* ---------- subscription form ---------- */
+.sub-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.sub-form .panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary-card {
+  position: sticky;
+  top: 80px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-line.grand {
+  padding-top: 12px;
+  border-top: 1px solid var(--line-strong);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.summary-line.grand span:last-child {
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.summary-note {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+@media (max-width: 1000px) {
+  .sub-form {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    position: static;
+  }
+}

@@ -1,32 +1,33 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Plus, X } from 'lucide-react'
 import { addVariant, createProduct, deleteVariant, getProduct, updateProduct } from '../api/products'
-import './Products.css'
+import { useToast } from '../components/Toast'
+import { Field, PageHeader, Panel, Skeleton, money } from '../components/ui'
+import './Billing.css'
+import './Catalog.css'
 
-const EMPTY_FORM = {
-  name: '',
-  product_type: 'goods',
-  sales_price: '',
-  cost_price: '',
-  description: '',
-  notes: '',
-}
+const EMPTY = { name: '', product_type: 'service', sales_price: '', cost_price: '', description: '', notes: '' }
 
 export default function ProductFormPage() {
   const { id } = useParams()
   const isEditing = Boolean(id)
   const navigate = useNavigate()
+  const toast = useToast()
 
-  const [form, setForm] = useState(EMPTY_FORM)
+  const [form, setForm] = useState(EMPTY)
   const [variants, setVariants] = useState([])
   const [newVariant, setNewVariant] = useState({ name: '', extra_price: '' })
   const [errors, setErrors] = useState({})
+  const [variantError, setVariantError] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [loading, setLoading] = useState(isEditing)
+  const [loaded, setLoaded] = useState(!isEditing)
 
   useEffect(() => {
-    if (!isEditing) return
+    if (!id) return undefined
+    let active = true
     getProduct(id).then((data) => {
+      if (!active) return
       setForm({
         name: data.name,
         product_type: data.product_type,
@@ -36,11 +37,14 @@ export default function ProductFormPage() {
         notes: data.notes,
       })
       setVariants(data.variants)
-      setLoading(false)
+      setLoaded(true)
     })
-  }, [id, isEditing])
+    return () => {
+      active = false
+    }
+  }, [id])
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const set = (field) => (e) => setForm({ ...form, [field]: e.target.value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -49,13 +53,15 @@ export default function ProductFormPage() {
     try {
       if (isEditing) {
         await updateProduct(id, form)
+        toast.success('Product saved.')
         navigate('/products')
       } else {
         const created = await createProduct(form)
+        toast.success('Product created. Add variants below if it comes in more than one flavour.')
         navigate(`/products/${created.id}/edit`, { replace: true })
       }
     } catch (err) {
-      setErrors(err.response?.data ?? { detail: 'Could not save product.' })
+      setErrors(err.response?.data ?? { detail: 'Could not save the product.' })
     } finally {
       setSubmitting(false)
     }
@@ -63,137 +69,132 @@ export default function ProductFormPage() {
 
   const handleAddVariant = async (e) => {
     e.preventDefault()
-    if (!newVariant.name || !newVariant.extra_price) return
+    setVariantError('')
     try {
       const created = await addVariant(id, newVariant)
       setVariants((prev) => [...prev, created])
       setNewVariant({ name: '', extra_price: '' })
-    } catch {
-      setErrors({ variant: 'Could not add variant.' })
+    } catch (err) {
+      const data = err.response?.data
+      setVariantError(data?.name?.[0] ?? data?.extra_price?.[0] ?? 'Could not add the variant.')
     }
   }
 
-  const handleDeleteVariant = async (variantId) => {
+  const handleDeleteVariant = async (variant) => {
     try {
-      await deleteVariant(id, variantId)
-      setVariants((prev) => prev.filter((v) => v.id !== variantId))
+      await deleteVariant(id, variant.id)
+      setVariants((prev) => prev.filter((v) => v.id !== variant.id))
     } catch {
-      setErrors({ variant: 'Could not delete variant.' })
+      toast.error('Could not remove the variant.')
     }
   }
 
-  const fieldError = (field) => {
-    const value = errors[field]
-    if (!value) return null
-    return Array.isArray(value) ? value.join(' ') : value
-  }
-
-  if (loading) return <p className="status-message">Loading product...</p>
+  if (!loaded) return <Skeleton height={420} radius={14} />
 
   return (
     <div>
-      <h1>{isEditing ? 'Edit product' : 'Add product'}</h1>
-      <form className="product-form" onSubmit={handleSubmit}>
-        {errors.detail && <p className="form-error">{errors.detail}</p>}
-        <label>
-          Product name
-          <input name="name" value={form.name} onChange={handleChange} required />
-          {fieldError('name') && <span className="field-error">{fieldError('name')}</span>}
-        </label>
-        <label>
-          Product type
-          <select name="product_type" value={form.product_type} onChange={handleChange}>
-            <option value="goods">Goods</option>
-            <option value="service">Service</option>
-          </select>
-        </label>
-        <div className="form-row">
-          <label>
-            Sales price
-            <input
-              type="number"
-              step="0.01"
-              name="sales_price"
-              value={form.sales_price}
-              onChange={handleChange}
-              required
-            />
-            {fieldError('sales_price') && <span className="field-error">{fieldError('sales_price')}</span>}
-          </label>
-          <label>
-            Cost price
-            <input
-              type="number"
-              step="0.01"
-              name="cost_price"
-              value={form.cost_price}
-              onChange={handleChange}
-              required
-            />
-            {fieldError('cost_price') && <span className="field-error">{fieldError('cost_price')}</span>}
-          </label>
-        </div>
-        <label>
-          Description
-          <textarea name="description" value={form.description} onChange={handleChange} rows={3} />
-        </label>
-        <label>
-          Notes
-          <textarea name="notes" value={form.notes} onChange={handleChange} rows={2} />
-        </label>
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Saving...' : isEditing ? 'Save changes' : 'Create product'}
-        </button>
-      </form>
+      <PageHeader
+        eyebrow="Catalog"
+        title={isEditing ? form.name || 'Edit product' : 'Add product'}
+        subtitle={isEditing ? 'Pricing, notes and variants.' : 'Set the name, price and cost. Variants can be added once it is saved.'}
+      />
 
-      {isEditing && (
-        <div className="variants-section">
-          <h2>Variants</h2>
-          {errors.variant && <p className="form-error">{errors.variant}</p>}
-          <table className="products-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Extra price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {variants.map((variant) => (
-                <tr key={variant.id}>
-                  <td>{variant.name}</td>
-                  <td>{variant.extra_price}</td>
-                  <td>
-                    <button type="button" className="danger" onClick={() => handleDeleteVariant(variant.id)}>
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {variants.length === 0 && (
-                <tr>
-                  <td colSpan={3}>No variants yet.</td>
-                </tr>
+      <div className="editor-grid">
+        <form className="form-card wide" style={{ maxWidth: 'none' }} onSubmit={handleSubmit}>
+          {errors.detail && <p className="form-error">{errors.detail}</p>}
+
+          <div className="form-row">
+            <Field label="Product name" error={errors.name}>
+              <input value={form.name} onChange={set('name')} required />
+            </Field>
+            <Field label="Product type" error={errors.product_type}>
+              <select value={form.product_type} onChange={set('product_type')}>
+                <option value="service">Service</option>
+                <option value="goods">Goods</option>
+              </select>
+            </Field>
+          </div>
+
+          <div className="form-row">
+            <Field label="Sales price (₹)" error={errors.sales_price}>
+              <input type="number" step="0.01" min="0" value={form.sales_price} onChange={set('sales_price')} required />
+            </Field>
+            <Field label="Cost price (₹)" error={errors.cost_price} hint="Internal only. Customers never see this.">
+              <input type="number" step="0.01" min="0" value={form.cost_price} onChange={set('cost_price')} required />
+            </Field>
+          </div>
+
+          <Field label="Description" error={errors.description}>
+            <textarea rows={3} value={form.description} onChange={set('description')} />
+          </Field>
+          <Field label="Internal notes" error={errors.notes}>
+            <textarea rows={3} value={form.notes} onChange={set('notes')} />
+          </Field>
+
+          <div className="form-actions">
+            <button type="submit" disabled={submitting}>
+              {submitting ? 'Saving...' : isEditing ? 'Save changes' : 'Create product'}
+            </button>
+            <Link className="btn-ghost" to="/products">
+              Cancel
+            </Link>
+          </div>
+        </form>
+
+        <Panel title="Variants" subtitle="Brands or editions that add to the base price">
+          {!isEditing ? (
+            <p className="variant-hint">Save the product first, then add variants such as an Odoo edition at +₹560.</p>
+          ) : (
+            <>
+              {variants.length === 0 ? (
+                <p className="variant-hint" style={{ marginTop: 0, marginBottom: 14 }}>
+                  No variants. The product sells at its base price.
+                </p>
+              ) : (
+                <ul className="variant-list">
+                  {variants.map((variant) => (
+                    <li key={variant.id}>
+                      <span className="variant-name">{variant.name}</span>
+                      <span className="variant-price">+ {money(variant.extra_price, 2)}</span>
+                      <button type="button" className="icon-btn" onClick={() => handleDeleteVariant(variant)} aria-label={`Remove ${variant.name}`}>
+                        <X size={15} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               )}
-            </tbody>
-          </table>
-          <form className="variant-form" onSubmit={handleAddVariant}>
-            <input
-              placeholder="Variant name (e.g. Odoo integration)"
-              value={newVariant.name}
-              onChange={(e) => setNewVariant({ ...newVariant, name: e.target.value })}
-            />
-            <input
-              type="number"
-              step="0.01"
-              placeholder="Extra price"
-              value={newVariant.extra_price}
-              onChange={(e) => setNewVariant({ ...newVariant, extra_price: e.target.value })}
-            />
-            <button type="submit">Add variant</button>
-          </form>
-        </div>
-      )}
+
+              <form className="variant-add" onSubmit={handleAddVariant}>
+                <input
+                  placeholder="Variant, e.g. Odoo"
+                  value={newVariant.name}
+                  onChange={(e) => setNewVariant({ ...newVariant, name: e.target.value })}
+                  required
+                  aria-label="Variant name"
+                />
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Extra ₹"
+                  value={newVariant.extra_price}
+                  onChange={(e) => setNewVariant({ ...newVariant, extra_price: e.target.value })}
+                  required
+                  aria-label="Extra price"
+                />
+                <button type="submit" className="btn-secondary">
+                  <Plus size={15} /> Add
+                </button>
+              </form>
+              {variantError && (
+                <p className="form-error" style={{ marginTop: 10 }}>
+                  {variantError}
+                </p>
+              )}
+            </>
+          )}
+        </Panel>
+      </div>
     </div>
   )
 }

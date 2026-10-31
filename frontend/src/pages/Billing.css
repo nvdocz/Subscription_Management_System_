@@ -1,0 +1,225 @@
+/* Shared by invoices, payments, billing run, tax rules and discounts. */
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.date-range input {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.select-compact {
+  padding: 8px 10px;
+  font-size: 13.5px;
+}
+
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.data-table td.empty-cell {
+  padding: 8px;
+}
+
+.pay-link {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--amber-soft);
+  color: var(--warning) !important;
+}
+
+.pay-link:hover {
+  text-decoration: none !important;
+  background: var(--amber);
+  color: #fff !important;
+}
+
+/* ---------- billing run ---------- */
+.run-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.run-summary {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-bottom: 6px;
+}
+
+.run-figure span {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.run-figure strong {
+  font-family: var(--display);
+  font-variation-settings: 'opsz' 48, 'SOFT' 30;
+  font-size: 34px;
+  font-weight: 540;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.run-control {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.run-control p {
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.run-note {
+  display: flex;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.run-note svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--pine);
+}
+
+.run-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.run-result-grid strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 540;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.run-result-grid span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- rules and discounts ---------- */
+.explain-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 13px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.explain-strip strong {
+  color: var(--ink);
+}
+
+.rate-figure {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 540;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.usage-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.usage-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.usage-bar i {
+  display: block;
+  height: 100%;
+  background: var(--pine);
+}
+
+.usage-bar.full i {
+  background: var(--clay);
+}
+
+.cell-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.multi-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.multi-pick button {
+  padding: 4px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 560;
+}
+
+.multi-pick button.on {
+  border-color: var(--pine);
+  background: var(--pine);
+  color: #fff;
+}
+
+@media (max-width: 1000px) {
+  .run-layout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,108 @@
+.palette-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12vh;
+  background: rgba(11, 47, 38, 0.42);
+  backdrop-filter: blur(3px);
+  animation: fade 0.12s ease;
+}
+
+.palette {
+  width: min(620px, calc(100vw - 32px));
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+  animation: rise 0.16s ease;
+}
+
+.palette-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.palette-input input {
+  flex: 1;
+  padding: 17px 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  font-size: 15.5px;
+}
+
+.palette-input input:focus {
+  box-shadow: none;
+}
+
+kbd {
+  padding: 2px 7px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+}
+
+.palette-list {
+  max-height: 360px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.palette-list button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-weight: 560;
+}
+
+.palette-list button.active {
+  background: var(--pine);
+  color: #fff;
+}
+
+.palette-list button small {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.palette-list button.active small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.palette-list button svg {
+  flex: none;
+  color: var(--pine);
+}
+
+.palette-list button.active svg {
+  color: var(--amber);
+}
+
+.palette-empty {
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+}

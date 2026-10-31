@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, permissions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -15,6 +16,7 @@ from .serializers import (
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
     RegisterSerializer,
+    UserCreateSerializer,
     UserRoleUpdateSerializer,
     UserSerializer,
 )
@@ -38,16 +40,28 @@ class MeView(generics.RetrieveAPIView):
         return self.request.user
 
 
-class UserListView(generics.ListAPIView):
-    queryset = User.objects.all().order_by('username')
-    serializer_class = UserSerializer
+class UserListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrStaff]
+
+    def get_queryset(self):
+        users = User.objects.order_by('username')
+        if self.request.user.role == User.Role.STAFF:
+            users = users.filter(role=User.Role.CUSTOMER)
+        return users
+
+    def get_serializer_class(self):
+        return UserCreateSerializer if self.request.method == 'POST' else UserSerializer
 
 
 class UserRoleUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRoleUpdateSerializer
     permission_classes = [IsAdmin]
+
+    def perform_update(self, serializer):
+        if serializer.instance.pk == self.request.user.pk:
+            raise ValidationError('You cannot change your own role.')
+        serializer.save()
 
 
 class PasswordResetRequestView(APIView):

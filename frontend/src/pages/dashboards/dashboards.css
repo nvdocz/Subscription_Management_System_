@@ -1,0 +1,386 @@
+/* Shared styling for the three role dashboards and the reports page. */
+
+.figure-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  margin-bottom: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 18px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+
+.figure:last-child {
+  border-right: none;
+}
+
+.figure span {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.figure strong {
+  font-family: var(--display);
+  font-variation-settings: 'opsz' 36, 'SOFT' 30;
+  font-size: 21px;
+  font-weight: 540;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+.figure small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.figure a {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pine);
+}
+
+/* charts: legends and bars */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.donut-chart {
+  position: relative;
+  flex: 1 1 52%;
+  height: 100%;
+  min-width: 0;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donut-center strong {
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 540;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.donut-center span {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.legend-list,
+.legend-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.legend-list {
+  flex: 1 1 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.legend-list li,
+.legend-grid li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.legend-list li b,
+.legend-grid li b {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.legend-list i,
+.legend-grid i {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px 24px;
+  margin-top: 16px;
+}
+
+.stack-bar {
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--surface-2);
+}
+
+.stack-bar i {
+  display: block;
+  height: 100%;
+  border-right: 2px solid var(--surface);
+}
+
+.stack-bar i:last-child {
+  border-right: none;
+}
+
+.bar-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar-row-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--ink);
+  font-weight: 560;
+}
+
+.bar-row-head b {
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-track {
+  height: 8px;
+  margin: 6px 0 4px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--surface-2);
+}
+
+.bar-track i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.bar-rows small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* overdue chase rows */
+.chase-days {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 11.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* customer subscription card */
+.plan-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.plan-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.plan-card-head h2 {
+  margin-top: 2px;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 540;
+  letter-spacing: -0.02em;
+}
+
+.plan-card-head .product-tag {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.plan-card-price {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 540;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.plan-card-price small {
+  display: block;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.term-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.term-progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.term-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.term-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: var(--pine);
+}
+
+.term-bar.soon i {
+  background: var(--amber);
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+}
+
+.feature-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+}
+
+.feature-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.feature-list b {
+  font-weight: 560;
+  color: var(--ink);
+}
+
+.feature-list .yes {
+  color: var(--success);
+}
+
+.feature-list .no {
+  color: var(--muted);
+}
+
+.pay-now {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--pine);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mini-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.mini-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.mini-plan .product-tag {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.mini-plan strong {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 560;
+  color: var(--ink);
+}
+
+.mini-plan span {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.activity-type {
+  display: inline-block;
+  min-width: 78px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.error-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 520px;
+}

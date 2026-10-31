@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
-import './AuthForms.css'
+import { AuthShell } from '../components/AuthShell'
+import { Field } from '../components/ui'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -22,22 +23,20 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="auth-page">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h1>Forgot password</h1>
-        <p className="auth-copy">Enter your email and we&apos;ll send you a link to reset your password.</p>
+    <AuthShell
+      title="Reset your password"
+      subtitle="Enter your registered email and we will send you a reset link."
+      footer={<Link to="/login">Back to log in</Link>}
+    >
+      <form onSubmit={handleSubmit}>
         {message && <p className="form-success">{message}</p>}
-        <label>
-          Email
+        <Field label="Email">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
-        </label>
-        <button type="submit" disabled={submitting}>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={submitting}>
           {submitting ? 'Sending...' : 'Send reset link'}
         </button>
-        <p className="auth-links">
-          <Link to="/login">Back to login</Link>
-        </p>
       </form>
-    </div>
+    </AuthShell>
   )
 }

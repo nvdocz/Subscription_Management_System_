@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ProductVariantViewSet, ProductViewSet
+from .views import CatalogProductListView, ProductVariantViewSet, ProductViewSet
 
 product_list = ProductViewSet.as_view({'get': 'list', 'post': 'create'})
 product_detail = ProductViewSet.as_view(
@@ -15,6 +15,7 @@ variant_detail = ProductVariantViewSet.as_view(
 )
 
 urlpatterns = [
+    path('catalog/products/', CatalogProductListView.as_view(), name='catalog-products'),
     path('products/', product_list, name='product-list'),
     path('products/<int:pk>/', product_detail, name='product-detail'),
     path('products/<int:pk>/archive/', product_archive, name='product-archive'),

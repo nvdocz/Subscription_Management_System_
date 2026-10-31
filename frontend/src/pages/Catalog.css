@@ -1,0 +1,247 @@
+/* Products and plans (admin catalog). */
+
+.product-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.product-name-cell small {
+  max-width: 340px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.row-archived td {
+  color: var(--muted);
+}
+
+.margin-figure {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.margin-figure.good {
+  color: var(--success);
+}
+
+/* ---------- product editor ---------- */
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.variant-list {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.variant-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.variant-list li:last-child {
+  border-bottom: none;
+}
+
+.variant-list .variant-name {
+  color: var(--ink);
+  font-weight: 560;
+}
+
+.variant-list .variant-price {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.variant-add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px auto;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.variant-hint {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* ---------- plans ---------- */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 18px;
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.plan-card.is-off {
+  background: var(--surface-2);
+}
+
+.plan-card.is-off .plan-price {
+  color: var(--muted);
+}
+
+.plan-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.plan-product {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.plan-card h2 {
+  margin-top: 6px;
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 560;
+}
+
+.plan-price {
+  font-family: var(--display);
+  font-variation-settings: 'opsz' 48, 'SOFT' 30;
+  font-size: 34px;
+  font-weight: 540;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-price span {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.plan-facts {
+  margin: 10px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 14px;
+  font-size: 13px;
+}
+
+.plan-facts dt {
+  color: var(--muted);
+}
+
+.plan-facts dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 540;
+  text-align: right;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 2px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 560;
+  color: var(--text);
+}
+
+.chip.off {
+  border-style: dashed;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.plan-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.plan-actions a,
+.plan-actions button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--pine);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.plan-actions a:hover,
+.plan-actions button:hover {
+  text-decoration: underline;
+}
+
+.plan-actions .danger {
+  margin-left: auto;
+  color: var(--danger);
+}
+
+.availability-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.lifecycle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lifecycle-group > .field-label {
+  margin-bottom: 2px;
+}
+
+@media (max-width: 1000px) {
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
